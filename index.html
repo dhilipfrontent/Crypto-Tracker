@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+        content="width,initial-scale=1.0">
+        <title>crypto trackerL</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <style>
+            body{background:black;margin:0;overflow:hidden;font-family:'sans-serif';}
+            #bg-video{position:fixed;top:0;left:0;width:100%;height:100%;
+            object-fit:cover;z-index:-1;opacity:0.7;
+        }
+        .glow-text{text-shadow:oo20px rgbal(241,196,15,0.5);}
+        </style>
+    </head>
+    <body>
+        <video autoplay muted loop id="bg-video">
+            <source src="assets/galaxy-video.mp4.mp4"
+            type="video/mp4">
+        </video>
+        <div class="relative z-20 flex flex-col items-center 
+        justify-center h-screen text-center px-6">
+    <h1 id="title"class="text-5xl md:text-7xl font-black
+    italic tracking-tighter mb-4 glow-text text-white">
+    BITCION EXPLORER
+</h1>
+<div class="my-8">
+    <img id="btc-hero"
+    src="assets/pngwing.com.png"class="w-44 h-44 mx-auto"
+    style="filter:drop-shadow(0030px flc40f)";
+    alt="bitcion">
+</div>
+<p id="description"class="max-w-md
+white-glow 400 text-lg font-medium leading-relaxed mb-10 mx-auto">
+ <h1 id="title"class="text-2xl md:text-1xl
+    font-black italic tracking-tighter mb-4 glow-text text-white">
+real-time market analytics powered by live blockchain data.<br>
+track global cryptocurrency trends and monitor price fluctuation<br>
+instantly through our high-speed decentralized terminal.</h1></p>
+<button onclick="startRoute()"id="start-btn"
+class="px-12 py-4 border-2 border-yellow-500
+text-yellow-500 rounded-full font-blod uppercase
+hover;bg-yellow-500 hover;text-block transition-all
+duration-500">
+CRYPTO tracking
+</button>
+</div>
+<script>
+    //floating animation-Corrected syntax
+    gsap.to("#btc-hero",{y:25,duration:2,
+        repeat:-1,yoyo:true,ease:"power1.inOut"});
+        //Start Route function-Caase sensitive
+        function startRoute(){
+            const tl=gsap.timeline();
+            //title,description,and button fade out
+            tl.to("#title,#description,#start-btn",
+            {opacity:0,y:-30,duration:0.5}); 
+            //bitcoin zoom effect-spelling"to"and"onComplete"corrected
+            tl.to("#btc-hero",{
+                scale:500,
+                rotation:1080,
+                duration:2,
+                ease:"power2.in",
+                onComplete:()=>{window.location.href="trader-dashboard.html";
+              }
+            });
+        }
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Live Trader Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #0b0e11; color: #eaeaeb; font-family: 'Inter', sans-serif; }
+        .card { background: #1e2329; border-radius: 12px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .price-up { color: #0ecb81; } /* Green for profit */
+        .price-down { color: #f6465d; } /* Red for loss */
+    </style>
+</head>
+<body class="p-6">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-yellow-500">CRYPTO TRACKER</h1>
+        <div class="text-right">
+            <p class="text-gray-400">Live Status</p>
+            <p id="live-time" class="font-mono"></p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card">
+            <p class="text-gray-400 text-sm">Bitcoin (BTC) ></p>
+            <h2 id="btc-price" class="text-2xl font-bold">$0.00</h2>
+            <p id="btc-change" class="text-sm font-medium">0% (24h)</p>
+        </div>
+        <div class="card">
+            <p class="text-gray-400 text-sm">Market Cap</p>
+            <h2 id="market-cap" class="text-2xl font-bold">$0.0T</h2>
+        </div>
+        <div class="card">
+            <p class="text-gray-400 text-sm">Trading Volume</p>
+            <h2 id="volume" class="text-2xl font-bold">$0.0B</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="mb-4 text-lg font-semibold">BTC/USD Live Chart (Real-time)</h3>
+        <canvas id="cryptoChart" width="400" height="150"></canvas>
+    </div>
+
+    <script>
+        // 1. Live time logic
+        setInterval(() => {
+            document.getElementById('live-time').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // 2. Chart.js initialization
+        const ctx = document.getElementById('cryptoChart').getContext('2d');
+        const cryptoChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'BTC Price (USD)',
+                    data: [],
+                    borderColor: '#f1c40f',
+                    backgroundColor: 'rgba(241, 196, 15, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { ticks: { color: '#848e9c' } },
+                    y: { ticks: { color: '#848e9c' } }
+                }
+            }
+        });
+
+        // 3. CoinGecko API Integration
+        async function fetchCryptoData() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true');
+                const data = await response.json();
+                
+                const price = data.bitcoin.usd;
+                const change = data.bitcoin.usd_24h_change;
+                const mCap = data.bitcoin.usd_market_cap;
+                const vol = data.bitcoin.usd_24h_vol;
+
+                // Update UI using Backticks
+                document.getElementById('btc-price').innerText = `$${price.toLocaleString()}`;
+                
+                const changeEL = document.getElementById('btc-change');
+                changeEL.innerText = `${change.toFixed(2)}% (24h)`;
+                changeEL.className = change >= 0 ? 'price-up' : 'price-down';
+
+                document.getElementById('market-cap').innerText = `$${(mCap / 1e12).toFixed(2)}T`;
+                document.getElementById('volume').innerText = `$${(vol / 1e9).toFixed(2)}B`;
+
+                // Update Chart Data
+                const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                if (cryptoChart.data.labels.length > 10) {
+                    cryptoChart.data.labels.shift();
+                    cryptoChart.data.datasets[0].data.shift();
+                }
+                
+                cryptoChart.data.labels.push(now);
+                cryptoChart.data.datasets[0].data.push(price);
+                cryptoChart.update();
+
+            } catch (error) {
+                console.error("API Fetch Error:", error);
+            }
+        }
+
+        setInterval(fetchCryptoData, 10000);
+        fetchCryptoData(); // Initial call
+    </script>
+</body>
+</html>
